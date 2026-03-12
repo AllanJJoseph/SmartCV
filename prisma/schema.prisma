@@ -1,0 +1,125 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("POSTGRES_PRISMA_URL")
+  directUrl = env("POSTGRES_URL_NON_POOLING")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// NextAuth Models required for Authentication
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  password      String?   // Added for Credentials provider
+  image         String?
+  
+  accounts      Account[]
+  sessions      Session[]
+  
+  // SmartCV specific relations
+  masterProfile MasterProfile?
+  resumes       Resume[]
+  applications  Application[]
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// SmartCV Models
+model MasterProfile {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  field     String?  // e.g. "Computer Science", "Medicine", "Law"
+  
+  firstName String
+  lastName  String
+  email     String
+  phone     String?
+  linkedin  String?
+  github    String?
+  website   String?
+
+  // Stored as JSON strings for flexibility
+  experience String? // JSON array of experiences
+  education  String? // JSON array of education
+  skills     String? // JSON array of skills
+  projects   String? // JSON array of projects
+  certifications      String?
+  extraCurriculars    String?
+  references          String?
+  tenthGradeMarks     String?
+  twelfthGradeMarks   String?
+  cgpa                String?
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Resume {
+  id              String   @id @default(cuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  title           String   // e.g "Frontend Engineer - Vercel"
+  targetJobUrl    String?
+  targetJobDesc   String?
+  
+  // Stored exactly as structured for this specific resume
+  content         String   // JSON Snapshot of the tailored MasterProfile data
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Application {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  company     String
+  role        String
+  status      String   @default("applied") // applied, interviewing, offer, rejected
+  appliedDate DateTime @default(now())
+  notes       String?
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
