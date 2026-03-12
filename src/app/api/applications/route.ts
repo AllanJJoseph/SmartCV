@@ -11,7 +11,7 @@ export async function GET(req: Request) {
     }
 
     const applications = await prisma.application.findMany({
-      where: { user: { email: session.user.email } },
+      where: { user: { email: session.user.email || undefined } },
       orderBy: { createdAt: "desc" },
     });
 
@@ -37,7 +37,7 @@ export async function POST(req: Request) {
         company,
         role,
         status: status || "applied",
-        user: { connect: { email: session.user.email } },
+        user: { connect: { email: session.user.email || undefined } },
       },
     });
 

@@ -10,9 +10,12 @@ export async function DELETE(
   try {
     const { id } = await params;
     const session = await getServerSession(authOptions);
+    if (!session?.user?.email) {
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
 
     const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
+      where: { email: session.user.email || undefined },
     });
 
     if (!user) {

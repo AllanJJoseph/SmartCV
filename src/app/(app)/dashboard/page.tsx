@@ -12,7 +12,7 @@ export default async function DashboardPage() {
   }
 
   const user = await prisma.user.findUnique({
-    where: { email: session.user.email },
+    where: { email: session.user.email || undefined },
     include: {
       masterProfile: true,
       applications: {
