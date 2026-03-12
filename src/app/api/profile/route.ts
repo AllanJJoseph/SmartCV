@@ -10,7 +10,7 @@ export async function GET() {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const user = await prisma.user.findUnique({ where: { email: session.user.email } });
+    const user = await prisma.user.findUnique({ where: { email: session.user.email || undefined } });
     if (!user) return new NextResponse("User not found", { status: 404 });
 
     const profile = await prisma.masterProfile.findUnique({
@@ -31,7 +31,7 @@ export async function POST(req: Request) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const user = await prisma.user.findUnique({ where: { email: session.user.email } });
+    const user = await prisma.user.findUnique({ where: { email: session.user.email || undefined } });
     if (!user) return new NextResponse("User not found", { status: 404 });
 
     const body = await req.json();
