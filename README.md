@@ -2,7 +2,7 @@
 
 SmartCV is a minimal, professional, and aesthetic AI-powered resume and job application assistant. It uses a modern web stack to provide a seamless "glassmorphism" UI with advanced AI features for tailoring resumes to specific job contexts.
 
-## 🚀 Tech Stack Breakdown
+##   Tech Stack Breakdown
 
 ### 1. Framework & Core UI
 - **Next.js (App Router):** The foundation of the application, utilizing React Server Components (RSC) and standard client components.
@@ -49,4 +49,4 @@ SmartCV is a minimal, professional, and aesthetic AI-powered resume and job appl
 5. Start the development server: `npm run dev`
 6. Open http://localhost:3000
 
-*Developed by SpyderByte (Allan Joe Joseph, Saurav Venu, Amrita Shajikumar)*
+*Developed by SpyderByte (Allan Joe Joseph, Saurav Venu, Amrita Shajikumar)*/
